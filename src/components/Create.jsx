@@ -1,48 +1,57 @@
- import React from 'react'
+ import { nanoid } from "nanoid";
+ import { useForm } from "react-hook-form";
+ import { toast } from "react-toastify";
  
  const Create = (props) => {
     const todos = props.todos;
     const settodos = props.settodos;
 
-    const [title, settitle] = useState("");
-
-    const SubmitHandler =(e) => {
-        e.preventDefault();
-
-        const newtode ={
-            id : nanoid(),
-            title: title,
-            isComplete :false,
-        };
-
-        let copytodos = [...todos];
-        copytodos.push(newtodo);
-        settodos(copytodos);
+ //   const [title, settitle] = useState("");
+const {register ,
+    handleSubmit ,
+     reset,
+    formState:{errors},
+} =useForm();
 
 
-        settitle("");
+    const SubmitHandler =(data) => {
+      
+       data.isCompleted =false;
+       data.id =nanoid();
+      
+
+       const copytodos = [...todos];
+       copytodos.push(data);
+       settodos(copytodos);
+       toast.success("Todo created! ")
+
+       reset();
     };
 
-//     const buttoncss = {
-//  color: "white",
-//  padding: "5px 10px",
-//  backgroundColor: "transparent",
-//  border: "1px solid white",
-//  borderRadious: "Epx"
+       
 
-//     };
+      
+   // };
+
    return (
-    <div className = " border w-[70px]">
-        <h1> Create Tasks</h1>
-        <form onSubmit = { SubmitHandler}>
+    <div className = "border w-[60%] p-10 ">
+        <h1 className=" mb-10 text-5xl font-thin">
+         Set <span className="text-red-400"> Remainders </span>for
+         <br/> tasks
+        </h1>
+        <form onSubmit = { handleSubmit(SubmitHandler)}>
             <input 
-            onChange ={(e) => settitle(e.target.value)}
-            value = {title} 
+            {...register("title",{
+                required: "title can not be empty",
+            })}
+            className =" p-2 border-b w-full text-2xl font-thin outline-0"      
             type = " text "
             placeholder = "title"
             />
+            <small className>{errors?.title?.message}</small>
             <br/>
             <br/>
+            <button className ="text-xl px-10 py-2 border rounded">Create Todo</button>
         </form>
     </div>
    )
